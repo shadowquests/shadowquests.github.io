@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Orientación Vocacional - NexSkill</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .form-section {
+            padding: 40px;
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .option-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #4f46e5;
+        }
+
+        .option-card.selected {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border-color: #4f46e5;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+        }
+
+        .option-card.multi-select.selected {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border-color: #4f46e5;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+        }
+
+        .option-card.multi-select.selected::after {
+            content: "✓";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .option-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .option-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .option-card p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            margin-right: 15px;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+            box-shadow: 0 10px 20px rgba(107, 114, 128, 0.3);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .results-section {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .results-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+
+        .results-subtitle {
+            font-size: 1.2rem;
+            color: #6b7280;
+            margin-bottom: 40px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .skill-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .skill-card .icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .skill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .skill-card h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+            flex: 1;
+        }
+
+        .compatibility-score {
+            text-align: center;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 12px;
+            min-width: 80px;
+        }
+
+        .compatibility-score .score {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .compatibility-score .label {
+            display: block;
+            font-size: 0.7rem;
+            opacity: 0.9;
+        }
+
+        .skill-card p {
+            color: #6b7280;
+            line-height: 1.6;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .skill-details {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .detail-item .label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .detail-item .value {
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .demand-muy-alta {
+            color: #dc2626 !important;
+        }
+
+        .demand-alta {
+            color: #ea580c !important;
+        }
+
+        .demand-media {
+            color: #d97706 !important;
+        }
+
+        .demand-baja {
+            color: #16a34a !important;
+        }
+
+        .salary {
+            color: #059669 !important;
+        }
+
+        .whatsapp-btn {
+            background: #25d366;
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .whatsapp-btn:hover {
+            background: #128c7e;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(37, 211, 102, 0.3);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-section {
+                padding: 30px 20px;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-graduation-cap"></i> Test de Orientación Vocacional</h1>
+            <p>Descubre tus habilidades de alto valor y tu futuro profesional</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <!-- Sección 1: Datos Personales -->
+        <div class="form-section active" id="section1">
+            <h2 class="section-title">Datos Personales</h2>
+            <div class="form-group">
+                <label for="nombre">Nombre Completo</label>
+                <input type="text" id="nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="grado">Grado</label>
+                <select id="grado" required>
+                    <option value="">Selecciona tu grado</option>
+                    <option value="1ro">1ro de Secundaria</option>
+                    <option value="2do">2do de Secundaria</option>
+                    <option value="3ro">3ro de Secundaria</option>
+                    <option value="4to">4to de Secundaria</option>
+                    <option value="5to">5to de Secundaria</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="seccion">Sección</label>
+                <input type="text" id="seccion" placeholder="Ej: A, B, C..." required>
+            </div>
+            <div class="form-group">
+                <label for="celular">Número de Celular</label>
+                <input type="tel" id="celular" placeholder="+51 999 999 999" required>
+            </div>
+            <div class="form-group">
+                <label for="colegio">Colegio</label>
+                <input type="text" id="colegio" required>
+            </div>
+            <div class="navigation">
+                <div></div>
+                <button class="btn" onclick="nextSection()">Continuar</button>
+            </div>
+        </div>
+
+        <!-- Sección 2: Intereses y Pasatiempos -->
+        <div class="form-section" id="section2">
+            <h2 class="section-title">¿Qué actividades te gustan más? (Selecciona todas las que apliquen)</h2>
+            <div class="options-grid">
+                <div class="option-card multi-select" data-value="programacion_videojuegos" data-score="3">
+                    <span class="icon">🎮</span>
+                    <h3>Videojuegos</h3>
+                    <p>Jugar y crear videojuegos</p>
+                </div>
+                <div class="option-card multi-select" data-value="produccion_musical" data-score="2">
+                    <span class="icon">🎵</span>
+                    <h3>Música</h3>
+                    <p>Escuchar y crear música</p>
+                </div>
+                <div class="option-card multi-select" data-value="produccion_contenido" data-score="3">
+                    <span class="icon">📱</span>
+                    <h3>Redes Sociales</h3>
+                    <p>Crear contenido viral</p>
+                </div>
+                <div class="option-card multi-select" data-value="diseno_grafico" data-score="2">
+                    <span class="icon">🎨</span>
+                    <h3>Arte y Diseño</h3>
+                    <p>Dibujar y crear arte visual</p>
+                </div>
+                <div class="option-card multi-select" data-value="escritura_contenido" data-score="2">
+                    <span class="icon">📚</span>
+                    <h3>Lectura y Escritura</h3>
+                    <p>Leer y escribir historias</p>
+                </div>
+                <div class="option-card multi-select" data-value="edicion_video" data-score="3">
+                    <span class="icon">🎬</span>
+                    <h3>Videos</h3>
+                    <p>Crear y editar videos</p>
+                </div>
+                <div class="option-card multi-select" data-value="fotografia" data-score="2">
+                    <span class="icon">📸</span>
+                    <h3>Fotografía</h3>
+                    <p>Capturar momentos únicos</p>
+                </div>
+                <div class="option-card multi-select" data-value="animacion" data-score="3">
+                    <span class="icon">✨</span>
+                    <h3>Animación</h3>
+                    <p>Crear animaciones</p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevSection()">Anterior</button>
+                <button class="btn" onclick="nextSection()">Continuar</button>
+            </div>
+        </div>
+
+        <!-- Sección 3: Habilidades Tecnológicas -->
+        <div class="form-section" id="section3">
+            <h2 class="section-title">¿Qué tecnologías te interesan más? (Selecciona todas las que apliquen)</h2>
+            <div class="options-grid">
+                <div class="option-card multi-select" data-value="programacion_web" data-score="4">
+                    <span class="icon">🌐</span>
+                    <h3>Desarrollo Web</h3>
+                    <p>Crear sitios web y apps web</p>
+                </div>
+                <div class="option-card multi-select" data-value="programacion_apps" data-score="4">
+                    <span class="icon">📱</span>
+                    <h3>Apps Móviles</h3>
+                    <p>Desarrollar aplicaciones móviles</p>
+                </div>
+                <div class="option-card multi-select" data-value="inteligencia_artificial" data-score="5">
+                    <span class="icon">🤖</span>
+                    <h3>Inteligencia Artificial</h3>
+                    <p>Crear sistemas inteligentes</p>
+                </div>
+                <div class="option-card multi-select" data-value="ciberseguridad" data-score="4">
+                    <span class="icon">🔒</span>
+                    <h3>Ciberseguridad</h3>
+                    <p>Proteger sistemas digitales</p>
+                </div>
+                <div class="option-card multi-select" data-value="ciencia_datos" data-score="4">
+                    <span class="icon">📊</span>
+                    <h3>Ciencia de Datos</h3>
+                    <p>Analizar datos e información</p>
+                </div>
+                <div class="option-card multi-select" data-value="cloud_computing" data-score="3">
+                    <span class="icon">☁️</span>
+                    <h3>Cloud Computing</h3>
+                    <p>Gestionar servicios en la nube</p>
+                </div>
+                <div class="option-card multi-select" data-value="robotica" data-score="3">
+                    <span class="icon">🤖</span>
+                    <h3>Robótica</h3>
+                    <p>Construir robots inteligentes</p>
+                </div>
+                <div class="option-card multi-select" data-value="automatizacion" data-score="3">
+                    <span class="icon">⚙️</span>
+                    <h3>Automatización</h3>
+                    <p>Automatizar procesos</p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevSection()">Anterior</button>
+                <button class="btn" onclick="nextSection()">Continuar</button>
+            </div>
+        </div>
+
+        <!-- Sección 4: Creatividad y Diseño -->
+        <div class="form-section" id="section4">
+            <h2 class="section-title">¿En qué área creativa te gustaría destacar? (Selecciona todas las que apliquen)</h2>
+            <div class="options-grid">
+                <div class="option-card multi-select" data-value="diseno_grafico" data-score="3">
+                    <span class="icon">🎨</span>
+                    <h3>Diseño Gráfico</h3>
+                    <p>Crear diseños visuales impactantes</p>
+                </div>
+                <div class="option-card multi-select" data-value="diseno_ux" data-score="4">
+                    <span class="icon">📱</span>
+                    <h3>Diseño UX/UI</h3>
+                    <p>Diseñar experiencias de usuario</p>
+                </div>
+                <div class="option-card multi-select" data-value="edicion_video" data-score="4">
+                    <span class="icon">🎬</span>
+                    <h3>Edición de Video</h3>
+                    <p>Producir contenido audiovisual</p>
+                </div>
+                <div class="option-card multi-select" data-value="produccion_musical" data-score="3">
+                    <span class="icon">🎵</span>
+                    <h3>Producción Musical</h3>
+                    <p>Componer y producir música</p>
+                </div>
+                <div class="option-card multi-select" data-value="arte_digital" data-score="2">
+                    <span class="icon">🎨</span>
+                    <h3>Arte Digital</h3>
+                    <p>Crear ilustraciones digitales</p>
+                </div>
+                <div class="option-card multi-select" data-value="copywriting" data-score="3">
+                    <span class="icon">📝</span>
+                    <h3>Copywriting</h3>
+                    <p>Escribir textos que venden</p>
+                </div>
+                <div class="option-card multi-select" data-value="storytelling" data-score="2">
+                    <span class="icon">📖</span>
+                    <h3>Storytelling</h3>
+                    <p>Contar historias atrapantes</p>
+                </div>
+                <div class="option-card multi-select" data-value="branding_personal" data-score="3">
+                    <span class="icon">👤</span>
+                    <h3>Branding Personal</h3>
+                    <p>Crear marca personal</p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevSection()">Anterior</button>
+                <button class="btn" onclick="nextSection()">Continuar</button>
+            </div>
+        </div>
+
+        <!-- Sección 5: Negocios y Emprendimiento -->
+        <div class="form-section" id="section5">
+            <h2 class="section-title">¿Qué aspectos del mundo de los negocios te interesan? (Selecciona todas las que apliquen)</h2>
+            <div class="options-grid">
+                <div class="option-card multi-select" data-value="emprendimiento" data-score="4">
+                    <span class="icon">🚀</span>
+                    <h3>Emprender</h3>
+                    <p>Crear mi propia empresa</p>
+                </div>
+                <div class="option-card multi-select" data-value="marketing_digital" data-score="4">
+                    <span class="icon">📈</span>
+                    <h3>Marketing Digital</h3>
+                    <p>Promocionar productos y servicios</p>
+                </div>
+                <div class="option-card multi-select" data-value="ecommerce" data-score="3">
+                    <span class="icon">🛒</span>
+                    <h3>E-commerce</h3>
+                    <p>Vender productos online</p>
+                </div>
+                <div class="option-card multi-select" data-value="ventas" data-score="3">
+                    <span class="icon">💬</span>
+                    <h3>Ventas</h3>
+                    <p>Convencer y persuadir clientes</p>
+                </div>
+                <div class="option-card multi-select" data-value="inversiones" data-score="3">
+                    <span class="icon">💰</span>
+                    <h3>Inversiones</h3>
+                    <p>Hacer crecer mi dinero</p>
+                </div>
+                <div class="option-card multi-select" data-value="finanzas_personales" data-score="2">
+                    <span class="icon">💳</span>
+                    <h3>Finanzas Personales</h3>
+                    <p>Gestionar mi dinero</p>
+                </div>
+                <div class="option-card multi-select" data-value="gestion_proyectos" data-score="3">
+                    <span class="icon">📋</span>
+                    <h3>Gestión de Proyectos</h3>
+                    <p>Dirigir equipos y proyectos</p>
+                </div>
+                <div class="option-card multi-select" data-value="negociacion" data-score="2">
+                    <span class="icon">🤝</span>
+                    <h3>Negociación</h3>
+                    <p>Llegar a acuerdos beneficiosos</p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevSection()">Anterior</button>
+                <button class="btn" onclick="nextSection()">Continuar</button>
+            </div>
+        </div>
+
+        <!-- Sección 6: Comunicación y Liderazgo -->
+        <div class="form-section" id="section6">
+            <h2 class="section-title">¿Qué habilidades de comunicación te gustaría desarrollar? (Selecciona todas las que apliquen)</h2>
+            <div class="options-grid">
+                <div class="option-card multi-select" data-value="liderazgo" data-score="4">
+                    <span class="icon">👑</span>
+                    <h3>Liderazgo</h3>
+                    <p>Dirigir equipos y motivar</p>
+                </div>
+                <div class="option-card multi-select" data-value="oratoria" data-score="3">
+                    <span class="icon">🎤</span>
+                    <h3>Oratoria</h3>
+                    <p>Hablar en público con confianza</p>
+                </div>
+                <div class="option-card multi-select" data-value="idiomas" data-score="3">
+                    <span class="icon">🌍</span>
+                    <h3>Idiomas</h3>
+                    <p>Comunicarme en varios idiomas</p>
+                </div>
+                <div class="option-card multi-select" data-value="networking" data-score="3">
+                    <span class="icon">🤝</span>
+                    <h3>Networking</h3>
+                    <p>Construir relaciones profesionales</p>
+                </div>
+                <div class="option-card multi-select" data-value="trabajo_equipo" data-score="2">
+                    <span class="icon">👥</span>
+                    <h3>Trabajo en Equipo</h3>
+                    <p>Colaborar efectivamente</p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevSection()">Anterior</button>
+                <button class="btn" onclick="nextSection()">Continuar</button>
+            </div>
+        </div>
+
+        <!-- Sección 7: Habilidades Estratégicas -->
+        <div class="form-section" id="section7">
+            <h2 class="section-title">¿Qué habilidades estratégicas te interesan más? (Selecciona todas las que apliquen)</h2>
+            <div class="options-grid">
+                <div class="option-card multi-select" data-value="productividad" data-score="3">
+                    <span class="icon">⚡</span>
+                    <h3>Productividad</h3>
+                    <p>Ser más eficiente y organizado</p>
+                </div>
+                <div class="option-card multi-select" data-value="pensamiento_critico" data-score="3">
+                    <span class="icon">🧠</span>
+                    <h3>Pensamiento Crítico</h3>
+                    <p>Analizar y tomar buenas decisiones</p>
+                </div>
+                <div class="option-card multi-select" data-value="resolucion_problemas" data-score="4">
+                    <span class="icon">🔧</span>
+                    <h3>Resolución de Problemas</h3>
+                    <p>Resolver problemas complejos</p>
+                </div>
+                <div class="option-card multi-select" data-value="creatividad" data-score="2">
+                    <span class="icon">💡</span>
+                    <h3>Creatividad</h3>
+                    <p>Generar ideas innovadoras</p>
+                </div>
+                <div class="option-card multi-select" data-value="inteligencia_emocional" data-score="2">
+                    <span class="icon">❤️</span>
+                    <h3>Inteligencia Emocional</h3>
+                    <p>Manejar emociones y empatía</p>
+                </div>
+                <div class="option-card multi-select" data-value="aprendizaje_autonomo" data-score="3">
+                    <span class="icon">📚</span>
+                    <h3>Aprendizaje Autónomo</h3>
+                    <p>Aprender rápido por mi cuenta</p>
+                </div>
+                <div class="option-card multi-select" data-value="disciplina" data-score="2">
+                    <span class="icon">💪</span>
+                    <h3>Disciplina</h3>
+                    <p>Mantener constancia y hábitos</p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevSection()">Anterior</button>
+                <button class="btn" onclick="nextSection()">Continuar</button>
+            </div>
+        </div>
+
+        <!-- Sección 8: Tecnologías Emergentes -->
+        <div class="form-section" id="section8">
+            <h2 class="section-title">¿Qué tecnologías emergentes te emocionan más? (Selecciona todas las que apliquen)</h2>
+            <div class="options-grid">
+                <div class="option-card multi-select" data-value="realidad_virtual" data-score="3">
+                    <span class="icon">🥽</span>
+                    <h3>Realidad Virtual</h3>
+                    <p>Crear experiencias inmersivas</p>
+                </div>
+                <div class="option-card multi-select" data-value="impresion_3d" data-score="2">
+                    <span class="icon">🖨️</span>
+                    <h3>Impresión 3D</h3>
+                    <p>Diseñar y fabricar objetos</p>
+                </div>
+                <div class="option-card multi-select" data-value="drones" data-score="2">
+                    <span class="icon">🚁</span>
+                    <h3>Drones</h3>
+                    <p>Pilotaje y grabación aérea</p>
+                </div>
+                <div class="option-card multi-select" data-value="inteligencia_artificial" data-score="5">
+                    <span class="icon">🤖</span>
+                    <h3>IA Generativa</h3>
+                    <p>Crear contenido con IA</p>
+                </div>
+                <div class="option-card multi-select" data-value="ciencia_datos" data-score="4">
+                    <span class="icon">📊</span>
+                    <h3>Big Data</h3>
+                    <p>Analizar grandes volúmenes de datos</p>
+                </div>
+                <div class="option-card multi-select" data-value="ciberseguridad" data-score="4">
+                    <span class="icon">🔒</span>
+                    <h3>Ciberseguridad</h3>
+                    <p>Proteger información digital</p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevSection()">Anterior</button>
+                <button class="btn" onclick="nextSection()">Continuar</button>
+            </div>
+        </div>
+
+        <!-- Sección 9: Objetivos de Vida -->
+        <div class="form-section" id="section9">
+            <h2 class="section-title">¿Cuál es tu objetivo principal para los próximos 5 años?</h2>
+            <div class="options-grid">
+                <div class="option-card" data-value="emprendimiento" data-score="4">
+                    <span class="icon">🚀</span>
+                    <h3>Emprender</h3>
+                    <p>Crear mi propia empresa exitosa</p>
+                </div>
+                <div class="option-card" data-value="liderazgo" data-score="3">
+                    <span class="icon">👑</span>
+                    <h3>Liderazgo</h3>
+                    <p>Dirigir equipos en una gran empresa</p>
+                </div>
+                <div class="option-card" data-value="inteligencia_artificial" data-score="5">
+                    <span class="icon">🤖</span>
+                    <h3>Especialista en IA</h3>
+                    <p>Ser experto en inteligencia artificial</p>
+                </div>
+                <div class="option-card" data-value="produccion_contenido" data-score="3">
+                    <span class="icon">📺</span>
+                    <h3>Influencer Digital</h3>
+                    <p>Crear contenido viral y ser famoso</p>
+                </div>
+                <div class="option-card" data-value="inversiones" data-score="3">
+                    <span class="icon">💰</span>
+                    <h3>Libertad Financiera</h3>
+                    <p>Generar ingresos pasivos</p>
+                </div>
+                <div class="option-card" data-value="aprendizaje_autonomo" data-score="2">
+                    <span class="icon">📚</span>
+                    <h3>Continuar Aprendiendo</h3>
+                    <p>Dominar múltiples habilidades</p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevSection()">Anterior</button>
+                <button class="btn" onclick="nextSection()">Continuar</button>
+            </div>
+        </div>
+
+        <!-- Sección 10: Estilo de Trabajo -->
+        <div class="form-section" id="section10">
+            <h2 class="section-title">¿Cómo prefieres trabajar?</h2>
+            <div class="options-grid">
+                <div class="option-card" data-value="programacion_web" data-score="3">
+                    <span class="icon">💻</span>
+                    <h3>Desde Casa</h3>
+                    <p>Trabajo remoto y flexible</p>
+                </div>
+                <div class="option-card" data-value="liderazgo" data-score="3">
+                    <span class="icon">🏢</span>
+                    <h3>En Oficina</h3>
+                    <p>Ambiente corporativo tradicional</p>
+                </div>
+                <div class="option-card" data-value="emprendimiento" data-score="4">
+                    <span class="icon">🚀</span>
+                    <h3>Por Mi Cuenta</h3>
+                    <p>Freelancer o emprendedor</p>
+                </div>
+                <div class="option-card" data-value="trabajo_equipo" data-score="2">
+                    <span class="icon">👥</span>
+                    <h3>En Equipo</h3>
+                    <p>Colaborando con otros</p>
+                </div>
+                <div class="option-card" data-value="produccion_contenido" data-score="3">
+                    <span class="icon">📱</span>
+                    <h3>Proyectos Variados</h3>
+                    <p>Diferentes proyectos cada vez</p>
+                </div>
+                <div class="option-card" data-value="gestion_proyectos" data-score="3">
+                    <span class="icon">📋</span>
+                    <h3>Proyectos Largos</h3>
+                    <p>Enfocarme en un proyecto grande</p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevSection()">Anterior</button>
+                <button class="btn" onclick="nextSection()">Continuar</button>
+            </div>
+        </div>
+
+        <!-- Sección 11: Nivel de Experiencia -->
+        <div class="form-section" id="section11">
+            <h2 class="section-title">¿Cuál es tu nivel actual con la tecnología?</h2>
+            <div class="options-grid">
+                <div class="option-card" data-value="aprendizaje_autonomo" data-score="2">
+                    <span class="icon">🌱</span>
+                    <h3>Principiante</h3>
+                    <p>Estoy empezando a aprender</p>
+                </div>
+                <div class="option-card" data-value="productividad" data-score="3">
+                    <span class="icon">📈</span>
+                    <h3>Intermedio</h3>
+                    <p>Tengo conocimientos básicos</p>
+                </div>
+                <div class="option-card" data-value="inteligencia_artificial" data-score="4">
+                    <span class="icon">🚀</span>
+                    <h3>Avanzado</h3>
+                    <p>Ya tengo experiencia sólida</p>
+                </div>
+                <div class="option-card" data-value="liderazgo" data-score="5">
+                    <span class="icon">👑</span>
+                    <h3>Experto</h3>
+                    <p>Puedo enseñar a otros</p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevSection()">Anterior</button>
+                <button class="btn" onclick="nextSection()">Continuar</button>
+            </div>
+        </div>
+
+        <!-- Sección 12: Motivación Final -->
+        <div class="form-section" id="section12">
+            <h2 class="section-title">¿Qué te motiva más a aprender nuevas habilidades?</h2>
+            <div class="options-grid">
+                <div class="option-card" data-value="inversiones" data-score="3">
+                    <span class="icon">💰</span>
+                    <h3>Ganar Más Dinero</h3>
+                    <p>Mejorar mis ingresos</p>
+                </div>
+                <div class="option-card" data-value="liderazgo" data-score="3">
+                    <span class="icon">👑</span>
+                    <h3>Progresar Profesionalmente</h3>
+                    <p>Ascender en mi carrera</p>
+                </div>
+                <div class="option-card" data-value="creatividad" data-score="2">
+                    <span class="icon">💡</span>
+                    <h3>Ser Más Creativo</h3>
+                    <p>Desarrollar mi creatividad</p>
+                </div>
+                <div class="option-card" data-value="emprendimiento" data-score="4">
+                    <span class="icon">🚀</span>
+                    <h3>Crear Algo Propio</h3>
+                    <p>Construir mi propio negocio</p>
+                </div>
+                <div class="option-card" data-value="aprendizaje_autonomo" data-score="2">
+                    <span class="icon">📚</span>
+                    <h3>Curiosidad</h3>
+                    <p>Me gusta aprender cosas nuevas</p>
+                </div>
+                <div class="option-card" data-value="trabajo_equipo" data-score="2">
+                    <span class="icon">🌍</span>
+                    <h3>Ayudar a Otros</h3>
+                    <p>Usar mis habilidades para ayudar</p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button class="btn btn-secondary" onclick="prevSection()">Anterior</button>
+                <button class="btn" onclick="showResults()">Ver Mis Resultados</button>
+            </div>
+        </div>
+
+        <!-- Sección de Resultados -->
+        <div class="form-section" id="resultsSection">
+            <div class="results-section">
+                <h2 class="results-title">🎉 ¡Tus Habilidades de Alto Valor!</h2>
+                <p class="results-subtitle">Basado en tus respuestas, estas son las habilidades que más se alinean con tu perfil</p>
+                
+                <div class="skills-grid" id="skillsGrid">
+                    <!-- Los resultados se generarán dinámicamente -->
+                </div>
+
+                <button class="whatsapp-btn" onclick="sendToWhatsApp()">
+                    <i class="fab fa-whatsapp"></i>
+                    Enviar resultados por WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSection = 1;
+        const totalSections = 12;
+        let userAnswers = {};
+        let skillScores = {};
+
+        // Base de datos completa de habilidades de alto valor
+        const skillsDatabase = {
+            // 🧠 TECNOLÓGICAS Y DIGITALES
+            programacion_web: {
+                title: "Desarrollo Web Full-Stack con IA",
+                icon: "🌐⚡",
+                description: "Crea sitios web modernos y aplicaciones web completas usando IA para acelerar el desarrollo frontend y backend.",
+                category: "Tecnológicas",
+                demand: "Alta",
+                salary: "S/3,000 - S/8,000"
+            },
+            programacion_apps: {
+                title: "Desarrollo de Apps Móviles con IA",
+                icon: "📱🤖",
+                description: "Desarrolla aplicaciones móviles para Android e iOS usando herramientas de IA para optimizar el código y la experiencia de usuario.",
+                category: "Tecnológicas",
+                demand: "Muy Alta",
+                salary: "S/3,500 - S/10,000"
+            },
+            programacion_videojuegos: {
+                title: "Programación de Videojuegos con IA",
+                icon: "🎮🚀",
+                description: "Crea videojuegos inmersivos usando Unity, Roblox o Godot con IA para generar contenido, NPCs inteligentes y mecánicas avanzadas.",
+                category: "Tecnológicas",
+                demand: "Alta",
+                salary: "S/2,500 - S/7,000"
+            },
+            ciencia_datos: {
+                title: "Ciencia de Datos con IA",
+                icon: "📊🧠",
+                description: "Analiza grandes volúmenes de datos para extraer insights valiosos usando machine learning y herramientas de IA avanzadas.",
+                category: "Tecnológicas",
+                demand: "Muy Alta",
+                salary: "S/4,000 - S/12,000"
+            },
+            inteligencia_artificial: {
+                title: "Especialista en Inteligencia Artificial",
+                icon: "🤖✨",
+                description: "Domina machine learning, deep learning y IA generativa para crear chatbots, sistemas de reconocimiento y soluciones innovadoras.",
+                category: "Tecnológicas",
+                demand: "Extremadamente Alta",
+                salary: "S/5,000 - S/15,000"
+            },
+            ciberseguridad: {
+                title: "Ciberseguridad y Hacking Ético con IA",
+                icon: "🔒🛡️",
+                description: "Protege sistemas digitales usando IA para detectar amenazas, realizar auditorías de seguridad y prevenir ataques cibernéticos.",
+                category: "Tecnológicas",
+                demand: "Muy Alta",
+                salary: "S/4,500 - S/12,000"
+            },
+            cloud_computing: {
+                title: "Cloud Computing con IA",
+                icon: "☁️⚡",
+                description: "Gestiona infraestructuras en la nube (AWS, Azure, GCP) usando IA para optimizar recursos, automatizar despliegues y mejorar la escalabilidad.",
+                category: "Tecnológicas",
+                demand: "Alta",
+                salary: "S/3,500 - S/9,000"
+            },
+            automatizacion: {
+                title: "Automatización y No-Code con IA",
+                icon: "⚙️🤖",
+                description: "Crea aplicaciones y automatiza procesos sin programar mucho, usando herramientas no-code potenciadas por IA.",
+                category: "Tecnológicas",
+                demand: "Alta",
+                salary: "S/2,500 - S/6,000"
+            },
+            robotica: {
+                title: "Robótica Inteligente con IA",
+                icon: "🤖🚀",
+                description: "Construye robots autónomos usando Arduino, sensores y IA para crear soluciones innovadoras en automatización e IoT.",
+                category: "Tecnológicas",
+                demand: "Media",
+                salary: "S/2,000 - S/5,500"
+            },
+            impresion_3d: {
+                title: "Diseño e Impresión 3D con IA",
+                icon: "🖨️✨",
+                description: "Diseña y fabrica objetos 3D usando IA para optimizar diseños, reducir material y crear prototipos innovadores.",
+                category: "Tecnológicas",
+                demand: "Media",
+                salary: "S/1,800 - S/4,500"
+            },
+            realidad_virtual: {
+                title: "Realidad Virtual y Aumentada con IA",
+                icon: "🥽🚀",
+                description: "Crea experiencias inmersivas en VR/AR usando IA para generar contenido, optimizar rendimiento y mejorar la interactividad.",
+                category: "Tecnológicas",
+                demand: "Alta",
+                salary: "S/3,000 - S/8,000"
+            },
+            drones: {
+                title: "Pilotaje y Edición de Drones con IA",
+                icon: "🚁📹",
+                description: "Pilota drones profesionalmente y edita contenido aéreo usando IA para estabilización automática y efectos cinematográficos.",
+                category: "Tecnológicas",
+                demand: "Media",
+                salary: "S/2,000 - S/5,000"
+            },
+
+            // 📈 NEGOCIOS Y FINANZAS
+            emprendimiento: {
+                title: "Emprendimiento Digital con IA",
+                icon: "🚀💡",
+                description: "Crea y escala negocios digitales usando IA para análisis de mercado, automatización de procesos y optimización de ventas.",
+                category: "Negocios",
+                demand: "Alta",
+                salary: "Variable (S/2,000 - S/50,000+)"
+            },
+            marketing_digital: {
+                title: "Marketing Digital con IA",
+                icon: "📈🤖",
+                description: "Domina SEO, redes sociales, publicidad digital y branding usando IA para optimizar campañas y maximizar ROI.",
+                category: "Negocios",
+                demand: "Muy Alta",
+                salary: "S/2,500 - S/8,000"
+            },
+            ecommerce: {
+                title: "E-commerce y Dropshipping con IA",
+                icon: "🛒⚡",
+                description: "Crea tiendas online exitosas y sistemas de dropshipping usando IA para análisis de productos, pricing y automatización.",
+                category: "Negocios",
+                demand: "Alta",
+                salary: "S/2,000 - S/10,000"
+            },
+            ventas: {
+                title: "Ventas y Persuasión con IA",
+                icon: "💬🎯",
+                description: "Domina técnicas de ventas modernas usando IA para análisis de clientes, automatización de follow-ups y optimización de conversiones.",
+                category: "Negocios",
+                demand: "Alta",
+                salary: "S/2,000 - S/6,000"
+            },
+            negociacion: {
+                title: "Negociación Estratégica con IA",
+                icon: "🤝🧠",
+                description: "Desarrolla habilidades de negociación avanzadas usando IA para análisis de contrapartes y optimización de acuerdos.",
+                category: "Negocios",
+                demand: "Media",
+                salary: "S/2,500 - S/7,000"
+            },
+            inversiones: {
+                title: "Inversiones y Trading con IA",
+                icon: "📊💰",
+                description: "Aprende trading, criptomonedas e inversiones usando IA para análisis de mercado, predicción de tendencias y gestión de riesgo.",
+                category: "Negocios",
+                demand: "Alta",
+                salary: "Variable (S/1,500 - S/20,000+)"
+            },
+            finanzas_personales: {
+                title: "Finanzas Personales con IA",
+                icon: "💳📈",
+                description: "Gestiona tu dinero inteligentemente usando IA para presupuestos automáticos, análisis de gastos y optimización de ahorros.",
+                category: "Negocios",
+                demand: "Media",
+                salary: "S/1,500 - S/4,000"
+            },
+            gestion_proyectos: {
+                title: "Gestión de Proyectos con IA",
+                icon: "📋⚡",
+                description: "Dirige proyectos exitosos usando metodologías ágiles y herramientas de IA para planificación, seguimiento y optimización.",
+                category: "Negocios",
+                demand: "Alta",
+                salary: "S/3,000 - S/8,000"
+            },
+
+            // 🎨 CREATIVAS Y POPULARES
+            diseno_grafico: {
+                title: "Diseño Gráfico con IA",
+                icon: "🎨✨",
+                description: "Crea diseños visuales impactantes usando Photoshop, Illustrator y herramientas de IA para automatizar procesos creativos.",
+                category: "Creativas",
+                demand: "Alta",
+                salary: "S/2,000 - S/6,000"
+            },
+            edicion_video: {
+                title: "Edición de Video Pro con IA",
+                icon: "🎬🚀",
+                description: "Produce contenido audiovisual profesional usando Premiere, CapCut y herramientas de IA para edición automática y efectos avanzados.",
+                category: "Creativas",
+                demand: "Muy Alta",
+                salary: "S/2,500 - S/7,000"
+            },
+            fotografia: {
+                title: "Fotografía Profesional con IA",
+                icon: "📸🤖",
+                description: "Captura y edita fotografías de nivel profesional usando IA para mejora automática, composición y efectos visuales.",
+                category: "Creativas",
+                demand: "Media",
+                salary: "S/1,500 - S/5,000"
+            },
+            animacion: {
+                title: "Animación 2D/3D con IA",
+                icon: "✨🎭",
+                description: "Crea animaciones impresionantes y motion graphics usando IA para automatizar procesos, generar contenido y optimizar flujos de trabajo.",
+                category: "Creativas",
+                demand: "Alta",
+                salary: "S/2,500 - S/8,000"
+            },
+            diseno_ux: {
+                title: "Diseño UX/UI con IA",
+                icon: "🎨📱",
+                description: "Diseña experiencias de usuario excepcionales usando IA para investigación, prototipado y optimización de interfaces.",
+                category: "Creativas",
+                demand: "Muy Alta",
+                salary: "S/3,000 - S/9,000"
+            },
+            produccion_musical: {
+                title: "Producción Musical con IA",
+                icon: "🎵🤖",
+                description: "Compose y produce música profesional usando IA para crear beats, arreglos automáticos y mezclas de calidad.",
+                category: "Creativas",
+                demand: "Media",
+                salary: "S/1,500 - S/5,000"
+            },
+            arte_digital: {
+                title: "Arte Digital e Ilustración con IA",
+                icon: "🎨✨",
+                description: "Crea arte digital e ilustraciones usando herramientas de IA para generar ideas, optimizar técnicas y automatizar procesos.",
+                category: "Creativas",
+                demand: "Media",
+                salary: "S/1,800 - S/5,500"
+            },
+            escritura_contenido: {
+                title: "Escritura de Contenido con IA",
+                icon: "✍️🧠",
+                description: "Crea contenido escrito de alta calidad usando IA para generar ideas, optimizar SEO y mejorar la redacción.",
+                category: "Creativas",
+                demand: "Alta",
+                salary: "S/1,500 - S/4,500"
+            },
+            copywriting: {
+                title: "Copywriting con IA",
+                icon: "📝💰",
+                description: "Escribe textos que venden usando IA para optimizar conversiones, generar ideas y mejorar la persuasión.",
+                category: "Creativas",
+                demand: "Alta",
+                salary: "S/2,000 - S/6,000"
+            },
+            storytelling: {
+                title: "Storytelling con IA",
+                icon: "📖✨",
+                description: "Crea historias atrapantes usando IA para generar narrativas, desarrollar personajes y optimizar la estructura.",
+                category: "Creativas",
+                demand: "Media",
+                salary: "S/1,800 - S/5,000"
+            },
+            produccion_contenido: {
+                title: "Producción de Contenido con IA",
+                icon: "📺🚀",
+                description: "Crea contenido para YouTube, streaming y podcasting usando IA para optimización, edición y distribución.",
+                category: "Creativas",
+                demand: "Muy Alta",
+                salary: "S/2,000 - S/8,000"
+            },
+            branding_personal: {
+                title: "Branding Personal con IA",
+                icon: "👤✨",
+                description: "Construye tu marca personal en redes sociales usando IA para análisis de audiencia, contenido y estrategias de crecimiento.",
+                category: "Creativas",
+                demand: "Alta",
+                salary: "S/2,500 - S/7,000"
+            },
+
+            // 🌍 GLOBALES Y COMUNICACIÓN
+            idiomas: {
+                title: "Idiomas y Traducción con IA",
+                icon: "🌍🤖",
+                description: "Domina múltiples idiomas usando IA para aprendizaje acelerado, traducción automática e interpretación en tiempo real.",
+                category: "Comunicación",
+                demand: "Alta",
+                salary: "S/2,000 - S/6,000"
+            },
+            oratoria: {
+                title: "Oratoria y Comunicación con IA",
+                icon: "🎤✨",
+                description: "Desarrolla habilidades de comunicación efectiva usando IA para análisis de discurso, entrenamiento y mejora de presentaciones.",
+                category: "Comunicación",
+                demand: "Media",
+                salary: "S/2,000 - S/5,500"
+            },
+            networking: {
+                title: "Networking Estratégico con IA",
+                icon: "🤝🚀",
+                description: "Construye una red profesional sólida usando IA para identificar oportunidades, automatizar conexiones y gestionar relaciones.",
+                category: "Comunicación",
+                demand: "Alta",
+                salary: "S/2,500 - S/7,000"
+            },
+            liderazgo: {
+                title: "Liderazgo Digital con IA",
+                icon: "👑⚡",
+                description: "Desarrolla habilidades de liderazgo moderno usando IA para gestión de equipos, análisis de rendimiento y toma de decisiones.",
+                category: "Comunicación",
+                demand: "Alta",
+                salary: "S/3,000 - S/10,000"
+            },
+            trabajo_equipo: {
+                title: "Trabajo en Equipo con IA",
+                icon: "👥🤖",
+                description: "Optimiza la colaboración y resolución de conflictos usando herramientas de IA para gestión de equipos y comunicación.",
+                category: "Comunicación",
+                demand: "Media",
+                salary: "S/2,000 - S/5,000"
+            },
+
+            // ⚙️ ESTRATÉGICAS Y PERSONALES
+            productividad: {
+                title: "Productividad con IA",
+                icon: "⚡🧠",
+                description: "Optimiza tu productividad usando IA para automatización, gestión de tiempo, análisis de rendimiento y optimización de hábitos.",
+                category: "Estratégicas",
+                demand: "Alta",
+                salary: "S/2,000 - S/5,500"
+            },
+            pensamiento_critico: {
+                title: "Pensamiento Crítico con IA",
+                icon: "🧠✨",
+                description: "Desarrolla habilidades de análisis y toma de decisiones usando IA para procesar información compleja y evaluar opciones.",
+                category: "Estratégicas",
+                demand: "Media",
+                salary: "S/2,500 - S/6,000"
+            },
+            resolucion_problemas: {
+                title: "Resolución de Problemas con IA",
+                icon: "🔧🚀",
+                description: "Aprende a resolver problemas complejos usando IA para análisis, generación de soluciones y optimización de procesos.",
+                category: "Estratégicas",
+                demand: "Alta",
+                salary: "S/2,500 - S/7,000"
+            },
+            creatividad: {
+                title: "Creatividad e Innovación con IA",
+                icon: "💡✨",
+                description: "Desarrolla tu creatividad usando IA para generar ideas innovadoras, explorar posibilidades y optimizar procesos creativos.",
+                category: "Estratégicas",
+                demand: "Media",
+                salary: "S/2,000 - S/5,500"
+            },
+            inteligencia_emocional: {
+                title: "Inteligencia Emocional con IA",
+                icon: "❤️🧠",
+                description: "Mejora tu manejo de emociones y empatía usando IA para análisis emocional, coaching personalizado y desarrollo de habilidades sociales.",
+                category: "Estratégicas",
+                demand: "Media",
+                salary: "S/2,000 - S/5,000"
+            },
+            aprendizaje_autonomo: {
+                title: "Aprendizaje Autónomo con IA",
+                icon: "📚🚀",
+                description: "Domina el aprendizaje rápido y autodirigido usando IA para personalización, optimización de métodos y aceleración del conocimiento.",
+                category: "Estratégicas",
+                demand: "Alta",
+                salary: "S/2,500 - S/6,500"
+            },
+            disciplina: {
+                title: "Disciplina y Hábitos con IA",
+                icon: "💪⚡",
+                description: "Desarrolla disciplina y hábitos positivos usando IA para seguimiento, análisis de patrones y optimización de rutinas.",
+                category: "Estratégicas",
+                demand: "Media",
+                salary: "S/1,800 - S/4,500"
+            }
+        };
+
+        function updateProgress() {
+            const progress = (currentSection / totalSections) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function nextSection() {
+            if (currentSection < totalSections) {
+                // Validar sección actual
+                if (currentSection === 1) {
+                    const requiredFields = ['nombre', 'grado', 'seccion', 'celular', 'colegio'];
+                    for (let field of requiredFields) {
+                        if (!document.getElementById(field).value.trim()) {
+                            alert('Por favor completa todos los campos obligatorios');
+                            return;
+                        }
+                    }
+                } else {
+                    const selectedOptions = document.querySelectorAll(`#section${currentSection} .option-card.selected`);
+                    if (selectedOptions.length === 0) {
+                        alert('Por favor selecciona al menos una opción');
+                        return;
+                    }
+                }
+
+                // Guardar respuestas y calcular puntuaciones
+                saveAnswers();
+                calculateScores();
+                
+                // Cambiar a siguiente sección
+                document.getElementById(`section${currentSection}`).classList.remove('active');
+                currentSection++;
+                document.getElementById(`section${currentSection}`).classList.add('active');
+                updateProgress();
+            }
+        }
+
+        function prevSection() {
+            if (currentSection > 1) {
+                document.getElementById(`section${currentSection}`).classList.remove('active');
+                currentSection--;
+                document.getElementById(`section${currentSection}`).classList.add('active');
+                updateProgress();
+            }
+        }
+
+        function saveAnswers() {
+            if (currentSection === 1) {
+                userAnswers.personal = {
+                    nombre: document.getElementById('nombre').value,
+                    grado: document.getElementById('grado').value,
+                    seccion: document.getElementById('seccion').value,
+                    celular: document.getElementById('celular').value,
+                    colegio: document.getElementById('colegio').value
+                };
+            } else {
+                const selectedOptions = document.querySelectorAll(`#section${currentSection} .option-card.selected`);
+                const answers = Array.from(selectedOptions).map(card => ({
+                    value: card.dataset.value,
+                    score: parseInt(card.dataset.score) || 1
+                }));
+                userAnswers[`section${currentSection}`] = answers;
+            }
+        }
+
+        function calculateScores() {
+            // Inicializar puntuaciones si no existen
+            if (!skillScores || Object.keys(skillScores).length === 0) {
+                Object.keys(skillsDatabase).forEach(skill => {
+                    skillScores[skill] = 0;
+                });
+            }
+
+            // Calcular puntuaciones basadas en las respuestas
+            for (let sectionKey in userAnswers) {
+                if (sectionKey !== 'personal' && Array.isArray(userAnswers[sectionKey])) {
+                    userAnswers[sectionKey].forEach(answer => {
+                        if (skillScores.hasOwnProperty(answer.value)) {
+                            // Puntuación base del valor de la respuesta
+                            let baseScore = answer.score;
+                            
+                            // Multiplicadores por sección (algunas secciones tienen más peso)
+                            let multiplier = 1;
+                            if (sectionKey === 'section9') multiplier = 2; // Objetivos de vida
+                            if (sectionKey === 'section11') multiplier = 1.5; // Nivel de experiencia
+                            if (sectionKey === 'section12') multiplier = 1.5; // Motivación final
+                            
+                            // Aplicar multiplicador
+                            skillScores[answer.value] += baseScore * multiplier;
+                        }
+                    });
+                }
+            }
+        }
+
+        function showResults() {
+            saveAnswers();
+            calculateScores();
+            
+            // Ocultar sección actual
+            document.getElementById(`section${currentSection}`).classList.remove('active');
+            
+            // Mostrar resultados
+            document.getElementById('resultsSection').classList.add('active');
+            
+            // Generar recomendaciones
+            generateRecommendations();
+        }
+
+        function generateRecommendations() {
+            // Ordenar habilidades por puntuación
+            const sortedSkills = Object.entries(skillScores)
+                .sort(([,a], [,b]) => b - a)
+                .filter(([skill, score]) => score > 0);
+
+            // Obtener las top 6 habilidades
+            const topSkills = sortedSkills.slice(0, 6);
+            
+            // Si no hay suficientes habilidades con puntuación, agregar algunas por defecto
+            if (topSkills.length < 3) {
+                const defaultSkills = ['inteligencia_artificial', 'programacion_web', 'marketing_digital'];
+                defaultSkills.forEach(skill => {
+                    if (!topSkills.find(([key]) => key === skill)) {
+                        topSkills.push([skill, 1]);
+                    }
+                });
+            }
+            
+            // Mostrar las recomendaciones
+            const skillsGrid = document.getElementById('skillsGrid');
+            skillsGrid.innerHTML = '';
+            
+            topSkills.slice(0, 6).forEach(([skillKey, score]) => {
+                const skill = skillsDatabase[skillKey];
+                if (skill) {
+                    const skillCard = document.createElement('div');
+                    skillCard.className = 'skill-card';
+                    
+                    // Calcular porcentaje de compatibilidad
+                    const maxPossibleScore = 50; // Puntuación máxima teórica
+                    const compatibility = Math.min(Math.round((score / maxPossibleScore) * 100), 100);
+                    
+                    skillCard.innerHTML = `
+                        <span class="icon">${skill.icon}</span>
+                        <div class="skill-header">
+                            <h3>${skill.title}</h3>
+                            <div class="compatibility-score">
+                                <span class="score">${compatibility}%</span>
+                                <span class="label">Compatibilidad</span>
+                            </div>
+                        </div>
+                        <p>${skill.description}</p>
+                        <div class="skill-details">
+                            <div class="detail-item">
+                                <span class="label">Categoría:</span>
+                                <span class="value">${skill.category}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Demanda:</span>
+                                <span class="value demand-${skill.demand.toLowerCase().replace(' ', '-')}">${skill.demand}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Salario:</span>
+                                <span class="value salary">${skill.salary}</span>
+                            </div>
+                        </div>
+                    `;
+                    skillsGrid.appendChild(skillCard);
+                }
+            });
+        }
+
+        function sendToWhatsApp() {
+            const personal = userAnswers.personal;
+            const skills = document.querySelectorAll('#skillsGrid .skill-card h3');
+            const skillTitles = Array.from(skills).map(skill => skill.textContent);
+            
+            const message = `🎓 *Test de Orientación Vocacional - NexSkill*
+
+👤 *Datos del Estudiante:*
+• Nombre: ${personal.nombre}
+• Grado: ${personal.grado}
+• Sección: ${personal.seccion}
+• Colegio: ${personal.colegio}
+• Celular: ${personal.celular}
+
+🚀 *Top de Habilidades Recomendadas:*
+${skillTitles.map((skill, index) => `${index + 1}. ${skill}`).join('\n')}
+
+💡 *¿Interesado en desarrollar estas habilidades?*
+¡Contáctanos para más información sobre nuestros programas de formación!`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/51992610091?text=${encodedMessage}`;
+            
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Event listeners para las opciones
+        document.addEventListener('DOMContentLoaded', function() {
+            const optionCards = document.querySelectorAll('.option-card');
+            optionCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const section = this.closest('.form-section');
+                    const isMultiSelect = this.classList.contains('multi-select');
+                    
+                    if (isMultiSelect) {
+                        // Para selección múltiple, toggle la selección
+                        this.classList.toggle('selected');
+                    } else {
+                        // Para selección única, remover otras selecciones
+                        const otherCards = section.querySelectorAll('.option-card:not(.multi-select)');
+                        otherCards.forEach(otherCard => otherCard.classList.remove('selected'));
+                        
+                        // Seleccionar este card
+                        this.classList.add('selected');
+                    }
+                });
+            });
+            
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
